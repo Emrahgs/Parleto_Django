@@ -1,0 +1,21 @@
+<h1>Category List</h1>
+<br>
+
+<form method="GET">
+   <select name="paginate_by" id="">
+       <option value="1">1</option>
+       <option value="2">2</option>
+       <option value="3">3</option>
+       <option value="5">5</option>
+   </select>
+   <input type="submit" value="Submit">
+</form>
+
+<br><hr><br>
+{% for obj in DataPaginated %}
+   <pre><h2><a href="{% url 'expenses:category_detail' pk=obj.id %}">{{ obj.name }}</h2></a></pre> <pre><a href="{% url 'expenses:category_update' pk=obj.id %}">Update</a></pre>
+</a> 
+<pre><h2><a href="{% url 'expenses:category_delete' pk=obj.id %}">Delete</h2></a></pre>
+{% endfor %}
+
+{% include '_pagination.html' %}

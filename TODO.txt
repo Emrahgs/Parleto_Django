@@ -1,0 +1,42 @@
+1. SETUP PROJECT
+
+   Requirements:
+   - python >= 3.7
+   - django >= 3
+   - sqlite
+   
+   python manage.py migrate
+   python manage.py loaddata fixtures.json
+
+2. Create git repository and add all files.
+3. Create new branch in format `firstName-lastName`.
+4. TASKS
+
+   1. Allow searching by date range in `expenses.ExpenseList`. - 
+   2. Allow searching by multiple categories in `expenses.ExpenseList`. - 
+   3. In `expenses.ExpenseList` add sorting by category and date (ascending and descending). - 
+   4. In `expenses.ExpenseList` add grouping by category name (ascending and descending). - 
+   5. In `expenses.ExpenseList` add total amount spent. - 
+
+   6. Add list view for `expenses.Category`. - 
+   7. Add number of expenses per category per row in `expenses.CategoryList`. - 
+
+   8. Add create view for `expenses.Category`.  - 
+   9. Add update view for `expenses.Category`.  - 
+   10. Add message for create/update in `expenses.Category` if name already exists. -    
+
+   11. Add delete view for `expenses.Category`.  - 
+   12. In `expenses.CategoryDelete` add total count of expenses that will be deleted. - 
+
+   13. Add detail view for `expenses.Category` with total summary per year-month. - 
+
+   14. Add option to change perPage items on list views. - 
+   15. Add total items to `_pagination.html`. -  
+
+
+5. By the end of seventh calendar day (even if it is incomplete), please:
+   1. If not all tasks are done add sign "-" before number in tasks in this file (TODO.txt)
+   2. Commit all changes.
+   3. Create patch using git `firstName-lastName.patch`.
+   4. Make sure patch contains only needed data.
+   5. Send us only patch file.

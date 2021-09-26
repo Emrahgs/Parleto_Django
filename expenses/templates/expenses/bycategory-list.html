@@ -1,0 +1,8 @@
+
+
+<h1>{{expenses|length}} Expense
+</h1>
+<h2>Total per year-month: {{total}}</h2>
+{% for obj in expenses %}
+    <h2>{{obj.name}}</h2>
+{% endfor %}

@@ -1,0 +1,10 @@
+<form method="post">{% csrf_token %}
+	
+
+    <p>Are you sure you want to delete "{{ object }}"?</p>
+
+    <p>{{object.expenses.all|length}} expense will be deleted</p>
+    
+        <input type="submit" value="Confirm">
+    </form>
+    

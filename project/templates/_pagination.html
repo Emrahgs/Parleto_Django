@@ -1,0 +1,17 @@
+<div class="pagination">
+    <span class="step-links">
+        {% if DataPaginated.has_previous %}
+            <a href="?page=1&param={{param}}">&laquo; first</a>
+            <a href="?page={{ DataPaginated.previous_page_number }}&param={{param}}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ DataPaginated.number }} of {{ DataPaginated.paginator.num_pages }}.
+        </span>
+
+        {% if DataPaginated.has_next %}
+            <a href="?page={{ DataPaginated.next_page_number }}&param={{param}}">next</a>
+            <a href="?page={{ DataPaginated.paginator.num_pages }}&param={{param}}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
