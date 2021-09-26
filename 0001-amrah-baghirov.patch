@@ -1,0 +1,1408 @@
+From a1446dcd4d08c6dff46ac51546d5c6322731bf16 Mon Sep 17 00:00:00 2001
+From: Emrahgs <bagirovemrah97@gmail.com>
+Date: Sun, 26 Sep 2021 19:03:48 +0400
+Subject: [PATCH] amrah-baghirov
+
+---
+ .gitignore                                    |   2 +
+ TODO.txt                                      |  42 ++++++
+ db.sqlite3                                    | Bin 0 -> 151552 bytes
+ expenses/__init__.py                          |   0
+ expenses/__pycache__/__init__.cpython-38.pyc  | Bin 0 -> 149 bytes
+ expenses/__pycache__/apps.cpython-38.pyc      | Bin 0 -> 373 bytes
+ expenses/__pycache__/forms.cpython-38.pyc     | Bin 0 -> 1300 bytes
+ expenses/__pycache__/models.cpython-38.pyc    | Bin 0 -> 1358 bytes
+ expenses/__pycache__/reports.cpython-38.pyc   | Bin 0 -> 940 bytes
+ expenses/__pycache__/urls.cpython-38.pyc      | Bin 0 -> 1268 bytes
+ expenses/__pycache__/views.cpython-38.pyc     | Bin 0 -> 4901 bytes
+ expenses/apps.py                              |   5 +
+ expenses/forms.py                             |  23 ++++
+ expenses/migrations/0001_initial.py           |  36 +++++
+ expenses/migrations/__init__.py               |   0
+ .../__pycache__/0001_initial.cpython-38.pyc   | Bin 0 -> 1171 bytes
+ .../__pycache__/__init__.cpython-38.pyc       | Bin 0 -> 160 bytes
+ expenses/models.py                            |  23 ++++
+ expenses/reports.py                           |  29 ++++
+ .../templates/expenses/bycategory-list.html   |   8 ++
+ .../templates/expenses/category-create.html   |  13 ++
+ .../templates/expenses/category-delete.html   |  10 ++
+ .../templates/expenses/category-list.html     |  21 +++
+ .../templates/expenses/category-update.html   |  13 ++
+ .../expenses/expense_confirm_delete.html      |  12 ++
+ expenses/templates/expenses/expense_form.html |  11 ++
+ expenses/templates/expenses/expense_list.html | 103 ++++++++++++++
+ expenses/urls.py                              |  53 +++++++
+ expenses/views.py                             | 129 ++++++++++++++++++
+ fixtures.json                                 |   1 +
+ manage.py                                     |  21 +++
+ project/__init__.py                           |   0
+ project/__pycache__/__init__.cpython-38.pyc   | Bin 0 -> 148 bytes
+ project/__pycache__/settings.cpython-38.pyc   | Bin 0 -> 2360 bytes
+ project/__pycache__/urls.cpython-38.pyc       | Bin 0 -> 458 bytes
+ project/asgi.py                               |  16 +++
+ project/settings.py                           | 120 ++++++++++++++++
+ project/templates/_pagination.html            |  17 +++
+ project/templates/base.html                   |  10 ++
+ project/urls.py                               |  11 ++
+ project/wsgi.py                               |  16 +++
+ requirements.txt                              |   4 +
+ 42 files changed, 749 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 TODO.txt
+ create mode 100644 db.sqlite3
+ create mode 100644 expenses/__init__.py
+ create mode 100644 expenses/__pycache__/__init__.cpython-38.pyc
+ create mode 100644 expenses/__pycache__/apps.cpython-38.pyc
+ create mode 100644 expenses/__pycache__/forms.cpython-38.pyc
+ create mode 100644 expenses/__pycache__/models.cpython-38.pyc
+ create mode 100644 expenses/__pycache__/reports.cpython-38.pyc
+ create mode 100644 expenses/__pycache__/urls.cpython-38.pyc
+ create mode 100644 expenses/__pycache__/views.cpython-38.pyc
+ create mode 100644 expenses/apps.py
+ create mode 100644 expenses/forms.py
+ create mode 100644 expenses/migrations/0001_initial.py
+ create mode 100644 expenses/migrations/__init__.py
+ create mode 100644 expenses/migrations/__pycache__/0001_initial.cpython-38.pyc
+ create mode 100644 expenses/migrations/__pycache__/__init__.cpython-38.pyc
+ create mode 100644 expenses/models.py
+ create mode 100644 expenses/reports.py
+ create mode 100644 expenses/templates/expenses/bycategory-list.html
+ create mode 100644 expenses/templates/expenses/category-create.html
+ create mode 100644 expenses/templates/expenses/category-delete.html
+ create mode 100644 expenses/templates/expenses/category-list.html
+ create mode 100644 expenses/templates/expenses/category-update.html
+ create mode 100644 expenses/templates/expenses/expense_confirm_delete.html
+ create mode 100644 expenses/templates/expenses/expense_form.html
+ create mode 100644 expenses/templates/expenses/expense_list.html
+ create mode 100644 expenses/urls.py
+ create mode 100644 expenses/views.py
+ create mode 100644 fixtures.json
+ create mode 100755 manage.py
+ create mode 100644 project/__init__.py
+ create mode 100644 project/__pycache__/__init__.cpython-38.pyc
+ create mode 100644 project/__pycache__/settings.cpython-38.pyc
+ create mode 100644 project/__pycache__/urls.cpython-38.pyc
+ create mode 100644 project/asgi.py
+ create mode 100644 project/settings.py
+ create mode 100644 project/templates/_pagination.html
+ create mode 100644 project/templates/base.html
+ create mode 100644 project/urls.py
+ create mode 100644 project/wsgi.py
+ create mode 100644 requirements.txt
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..e8c98f1
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,2 @@
++venv/
++db.sqlite3/
+\ No newline at end of file
+diff --git a/TODO.txt b/TODO.txt
+new file mode 100644
+index 0000000..47efede
+--- /dev/null
++++ b/TODO.txt
+@@ -0,0 +1,42 @@
++1. SETUP PROJECT
++
++   Requirements:
++   - python >= 3.7
++   - django >= 3
++   - sqlite
++   
++   python manage.py migrate
++   python manage.py loaddata fixtures.json
++
++2. Create git repository and add all files.
++3. Create new branch in format `firstName-lastName`.
++4. TASKS
++
++   1. Allow searching by date range in `expenses.ExpenseList`. - 
++   2. Allow searching by multiple categories in `expenses.ExpenseList`. - 
++   3. In `expenses.ExpenseList` add sorting by category and date (ascending and descending). - 
++   4. In `expenses.ExpenseList` add grouping by category name (ascending and descending). - 
++   5. In `expenses.ExpenseList` add total amount spent. - 
++
++   6. Add list view for `expenses.Category`. - 
++   7. Add number of expenses per category per row in `expenses.CategoryList`. - 
++
++   8. Add create view for `expenses.Category`.  - 
++   9. Add update view for `expenses.Category`.  - 
++   10. Add message for create/update in `expenses.Category` if name already exists. -    
++
++   11. Add delete view for `expenses.Category`.  - 
++   12. In `expenses.CategoryDelete` add total count of expenses that will be deleted. - 
++
++   13. Add detail view for `expenses.Category` with total summary per year-month. - 
++
++   14. Add option to change perPage items on list views. - 
++   15. Add total items to `_pagination.html`. -  
++
++
++5. By the end of seventh calendar day (even if it is incomplete), please:
++   1. If not all tasks are done add sign "-" before number in tasks in this file (TODO.txt)
++   2. Commit all changes.
++   3. Create patch using git `firstName-lastName.patch`.
++   4. Make sure patch contains only needed data.
++   5. Send us only patch file.
+diff --git a/db.sqlite3 b/db.sqlite3
+new file mode 100644
+index 0000000000000000000000000000000000000000..633dcaa638eb4cf2c0b787f2bffbd4e52719363f
+GIT binary patch
+literal 151552
+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
+S2!H?xfB*=900@8p2>dU0wviG5
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/__init__.py b/expenses/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/expenses/__pycache__/__init__.cpython-38.pyc b/expenses/__pycache__/__init__.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..ef43c6c83911f87c26112597293f4535972885ca
+GIT binary patch
+literal 149
+zcmWIL<>g`kf@`G#i6Hthh(HF6K#l_t7qb9~6oz01O-8?!3`HPe1o6vCKO;XkRX;Vi
+zC^5ra-z7h}G&eP`q*y;7u_!0CBtPCID={xUUq7{?AT_TzwOBtsJ~J<~BtBlRpz;=n
+SO>TZlX-=vg$jr|`%m4rh*dssy
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/__pycache__/apps.cpython-38.pyc b/expenses/__pycache__/apps.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..9e1fbeeb4ca90b2dac3ca56493513b7f9f95875b
+GIT binary patch
+literal 373
+zcmYjNy-ve05I)C2N=u7)1lBC|Ru+VcC}OKBAr>=OR(-UfI5u%3!3;0M3o&?Q;uV-U
+zCq?Z^_uYN|?#K51csvBMuXd>)D1Ik$XgQG?c{n35U|0o~Nygw7OlJ587>?|n%gp3=
+zP#*nI6_hLvuDri?_2biel}-+g5t)&PQvw9Z3{W?d++;L?$CH~^k9EM%_sarzd{O4H
+zP^#7zm5M{9tTSzu@{v+6t*&-Tp5iAo1<mi^cPci{qCnf|&AFJnRco={2C>vlg<GfQ
+z&$?ba@xMrD@598uHJm1-4+t4S!8*R6D;}G!VUp^aq;<-EVV@01h{Z*J%gglaZqA7R
+E0V8=;{r~^~
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/__pycache__/forms.cpython-38.pyc b/expenses/__pycache__/forms.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..63da58a7265362e0d564a0ac99a07656e8a5349e
+GIT binary patch
+literal 1300
+zcma)6y>1gh5Z=E#pB>vIArKL$=u8oJq(LZBOd^nCA|jfT(CKu$w$I%8oL!$Fk*SQ7
+z3f?0xM6oSZUV)04wXK9W1uM;XclLJXo0)I?vC*gzSij1X_$4FcHy&;;0f&7M(*Y%k
+zq#4O+NGXv_@{Hv?<hck1B}YUG>3t{CQ*`Lfc<6)0mld#77M6+(PD!hJ4W3AgTCZ2=
+z++0&UF<W`_b*x54+2A0asD7c(6a4P>@)rm54mOH}RFaTM8geCuo@9Nhd{t3g@fn-Z
+zZ6f&(8U{DGW-P2;k{)%ag0OZ;1PRvwQD8R~!B17Jlffb20(?RO5I{zB0P(<3Nd`rl
+zD6;|#Q`iSFTcDP}6b}V}17Hw>Up!t3v3sm0G58mwIES>8McUn#Z-Xd8V-(q16y=31
+zGu+ps=&X#h`HjZTSPw2$X8m5OGHI@e-T<ppfA-pgB3Esd>v*u&?i5LxtI@=?Phy>^
+zNfC91@u*+4)x7Mc?Ygl$KDPpKRWTh55l}((L)avk<#OQ-$^#Jd0@Q@e$dFFyl>G#9
+zOv#XS$fxyhTvFUm`4bZHvn@%W7OZ>N64o>2SZT~O9i@{f((B;G23nn!sa6uc5JqJ^
+zD`MR@*8lv){nGS`+G-RfS!@hEa_MfuOZ^B`1H?F%&?c?Xi=EY)FT=I!x{lBAiEe@l
+zD@PyRpS<lJX&3`y*A85-53#ORWT}~0evyuC(APydPDg!L6BpGs7I+esWlKyB*i&@w
+z&><)f#2}Thq|aDWXtb`7iGy(;#O#1tk_lK$C4*UFz+x^rlu_8t<)j>F1>`~6u6X+&
+zYHqLknRAnB{Br<8-l>(wR5bS9b?t_9xB7vU!Jhm}qHasv^@Sha>)|<E;HANa1We<(
+v3&ZM5$J}|Jd^Z5bO@o7FtH(GJSPWNR_v}9ZHh49ktk+m0N1Hlb=bO#Hbh8xu
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/__pycache__/models.cpython-38.pyc b/expenses/__pycache__/models.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..e95fbda880b997f3c2dabbd7c9c75af725ef0bea
+GIT binary patch
+literal 1358
+zcmZ`(y^h;P5Z+z>N=HfOL*OD+;wmgG0cnyV2y94p0t7x7u+y+1_B3N1<t2GulEK{}
+zo!#CO9P$7z@;WKDO?9u}Dl??y2swnr&d$!x?9P1ik-ttRV?obf-Anza65?-O96mlR
+zp3rE1CIJGZ5gE_Q$WmoWvhEqL^fO<Ip9J_2d=L<z+6M2vEF?<^5m}<0B?9?Mr12e{
+zCQei7!m<W54QY|Z-_SO==B>l$a|(~hiXxLBGKJpO2MG$i8<hpawOI%u9Ui%OsaxFC
+z_Ui6i3VEF>H!k&MZm`<4=PvB3;$4Spd2k8qJeD+?n8fd5D{cjyCOJ#L(j|VRxk2;h
+zqp(Nh@#*`;d0pZHORLYnTdeAJS7OyRi<jCOZ0mfr)zzk6;N=BY4K|CR()q=ei}Ji_
+zZJsmq4WUkVUmx#tp6@nKxsW{PoAca_^PJ*4!+MhE?>cRU9n0}<v^>}Ld4UEjXKyDg
+zILiZ(@RGrdXf&+Ea;kdEJ<QqV3A+J_J?7L*LY$hZ-mA<*e;Z&(G6IiYYWz)*#k3xA
+z%Wq^hCjAIv7{Qo&l+bE|)9q|~Ox{OinLz@R4<dU2Q^I-XqGtnA_mbhp^vN6_Bm*+@
+zKvAG~o$LbVFR<0Ax(*%#_5a#?eDU@)_3f0R?2HA+ySTQ1wx~7-(DX<#KF;Se*tzdZ
+zEbSMhzjpDyi>dEMb(Irmu|?uVXN(KZjIQ3g#G;{lp>LTDC@z&Yr0I@Za>sqzGZBhS
+z(Kc=hxGqX<@(ZKa*wAhS_(pf8bupafMFn_ykEVQZPtz|+8E6WUW_e5Pp;_IEKLWx<
+zoqm#ErJnN{jGh%P)MedOtsPP1LG?W`m@yA&?D;s`gZi0{C;vgRhi0JP_<3!y*i^sZ
+zRnI3EEuX$xK3zR?@p|_u+6R0oBjJ+OQ1-yrM{F9c$gN*f<)pSniS}#W3ECR;)&CRv
+zgq*m;4OhX0ekc<;l_$#bP8!>9XmTUyKgKzn^$BOkyLD$xGe6S}T94g=7yLKsOX$N7
+ZK>C*=@ejk7_#^YO|5?N;k%@N_{R8N*EZP77
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/__pycache__/reports.cpython-38.pyc b/expenses/__pycache__/reports.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..329c74a2f1f8f0f0684101bbe8f6de41a17dab35
+GIT binary patch
+literal 940
+zcmZWnL2uJA6t*45Nz-;zFb%{%=z;bILYgL|^}vNPX}}?uDvQn9DUOTnAS!VySN_9#
+z+#lkQD<^&e9Z=p&VXMHAzdXM$@q6EAzwUMu0^>_{l5H3vUvaTJAV;3Tbk6}Kk+dM1
+zrj%mL3Z{cJ&^+bMIw(RdQqja5;wX(E4yE`+(pW|^hIdQ0PDwxc2D_0yt=liHR94B+
+zEcbm@2d9;;!#7z`DIk+qwkq=%ru0)-#m6Qql*?64@#jAS;|S(4Om_(2iKidQ1@nQV
+zo=di*OD2QQ^fFwLOCkA+0vE|}Nu_{nEV+zU_!Wh|;&Hl{XI`BfyO>PMOsh401hu<2
+zNzB<8>eM3BrYb$K)LAsK-?HddEu67l$vV!;(s<a-3P@XyTx?M9<ZMxk_o&j@0MqU5
+zVp7bUzXGZ6DrFZ=`72`Y0>6GboEoi$O51GuWH>T;rB&(O@FcT^@@6u+$jWmwR3GN5
+zbjl5_nnMq6FkjUBuF^UKIdiD{R|X1j4*&?|@N_mwz<zQreu$6}cFi_+AGrUFMjegO
+zk0IDK8q8#1CI^c{88jAy)sPJ#8_7V58;hfH%_W!uz9kEl*@?#UwFj`HZ2>?&fR^oj
+zjN`^p+eWg35F&ID_7KoKdk3M1fL?9k9z^xQuJqel$lZ!(;#U%~Yc9lEL?He<h(~9}
+z{iJT^rYKbIXQp)9v+c>o>47{OXd_jzJ-_YQKKz#(yoKw#{kiG8xdv!#Q(&jtrthZZ
+Y_z<?O3U!3{+TpG0upaHuP7t?$1B~?JGynhq
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/__pycache__/urls.cpython-38.pyc b/expenses/__pycache__/urls.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..49d61b004ef16ac111d16c0281cf70e1eb61aca4
+GIT binary patch
+literal 1268
+zcmZ`&O>fgc5Z$%cb`m>rntsqi3+EhK-$1IW3aRCWP!TGJy;xRuNCI9b+D!`em2>|C
+z9Qi{a?UhsiLJ<|a&L&ONV$0)w^WMy?XT0alW&`Q#=kzRl>m&5rfaR;H!At$f4n~L}
+zhI7O*#oVC|cd3gJbC{bG?op5X)aL;Wc#YP0oz^vn7|9zvq#=)JRB64u$y>Blt$iIA
+z(-<QNSpf03_IJc;tbXNc+yMNs4J{Tz#G<d5HLqOOvRn+#J+5uJHE<1QqdHd(Ter*x
+zcvXc>i?^U&;YSv4Lr~!ziywnu;U^aFLaoAk2KVc9jXiyby3ejnx4N!soCwG!@O}uN
+zRpWfj7VA^UVdlTqEks>Ubxt(dABoGQkcIC~uG(|m>!F-fiI-H9Y?!b5?uvFDMaJ1=
+zpdtYmAS9%DR$g|o3SNB~Lm@#gW4oN^E}Jmpl3Z6y%E-cf1GSzM8HX~Si+a`9CMrnN
+zEYH)l+_a25TnTiQ$43lu<$oAL&ZG+EwATYE)2YbI)?7PFS8mPI9}SDi;rP>W0&KXv
+z83W7hdn#Q(_c-Y~VokSLtZQ?Zdq$RV&vreT6{8DBYO8NA6w_*c$$S?}(iu}W7gEz6
+zx`3&H<<<)OP#U|Zy%pg;12ff!^@e%V?a&SOF)R9`gA4tm$%8%=Acj5Rn9p{NA=)Uf
+zVue1?NCd{zjHw%Aj=KtN5<LScLgS8%+pk6?g*o)1WjsM9Q<F=DTB?7k35Y`eKw`%z
+zjJbK93`QIh;36BmNKQw+DTiVrle0|dnT*oYYP*RYnM_Q{gYl)R9qD4z9FEPQkOOTt
+r@UGLw5snDKK6Y-2OEAHXzWu+%b8blRF!pZ=asC*#ike6N@BQl^5)*k6
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/__pycache__/views.cpython-38.pyc b/expenses/__pycache__/views.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..3cab0a70ac6530154e026e07c7c712ffd9b5c790
+GIT binary patch
+literal 4901
+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
+Q-EMxTd7)Wvy3OVP0>AEjoB#j-
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/apps.py b/expenses/apps.py
+new file mode 100644
+index 0000000..12ca16e
+--- /dev/null
++++ b/expenses/apps.py
+@@ -0,0 +1,5 @@
++from django.apps import AppConfig
++
++
++class ExpensesConfig(AppConfig):
++    name = 'expenses'
+diff --git a/expenses/forms.py b/expenses/forms.py
+new file mode 100644
+index 0000000..c37e138
+--- /dev/null
++++ b/expenses/forms.py
+@@ -0,0 +1,23 @@
++from django import forms
++from .models import Expense, Category
++
++
++class ExpenseSearchForm(forms.ModelForm):
++    GROPING = ('date',)
++    grouping = forms.ChoiceField(choices=[('', '')] + list(zip(GROPING, GROPING)))
++
++    class Meta:
++        model = Expense
++        fields = ('name', 'category',)
++
++    def __init__(self, *args, **kwargs):
++        super().__init__(*args, **kwargs)
++        for i in self.fields:
++            self.fields[i].required = False
++
++
++class CategoryCreateForm(forms.ModelForm):
++
++    class Meta:
++        model = Category
++        fields = ('name',)
+diff --git a/expenses/migrations/0001_initial.py b/expenses/migrations/0001_initial.py
+new file mode 100644
+index 0000000..a6dd15f
+--- /dev/null
++++ b/expenses/migrations/0001_initial.py
+@@ -0,0 +1,36 @@
++# Generated by Django 3.2.7 on 2021-09-26 15:01
++
++import datetime
++from django.db import migrations, models
++import django.db.models.deletion
++
++
++class Migration(migrations.Migration):
++
++    initial = True
++
++    dependencies = [
++    ]
++
++    operations = [
++        migrations.CreateModel(
++            name='Category',
++            fields=[
++                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
++                ('name', models.CharField(max_length=50, unique=True)),
++            ],
++        ),
++        migrations.CreateModel(
++            name='Expense',
++            fields=[
++                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
++                ('name', models.CharField(max_length=50)),
++                ('amount', models.DecimalField(decimal_places=2, max_digits=8)),
++                ('date', models.DateField(db_index=True, default=datetime.date.today)),
++                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='expenses', to='expenses.category')),
++            ],
++            options={
++                'ordering': ('-date', '-pk'),
++            },
++        ),
++    ]
+diff --git a/expenses/migrations/__init__.py b/expenses/migrations/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/expenses/migrations/__pycache__/0001_initial.cpython-38.pyc b/expenses/migrations/__pycache__/0001_initial.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..7d6544b6d63e4d13ac20a15833e1c0d15507fb5d
+GIT binary patch
+literal 1171
+zcmaJ>&5qMZ5VqUD$z(Da82%QCyOAatkaiIgS}{r(gb)Y`xcFjqQZ=6T*zVA_(PXZ>
+zw^bg5m*7GAgv4o{fYl-a)izl;(UB|l<ErZKt8TyE-tJqp?*H?Ge{e19qcMJ7<g*^q
+zQ~f~#EU<GcHvcTQ3l_7&i5<K1yRrA!0tei`EpU-#{$Eb)gZ<KqybH>;o<~gg3y~^b
+z3t3j$FC<`IEllj^wL`{3daCy%(28xaVg`2Xq*m;rm-)cJ!5|C4rk@KQ_-pr=K|sD9
+z7;kUQj#<i}zh>?GTfcmNu(m0Co3i^bgdG@}Y}h4x3v3)@+u0B<wZ6;b+c8~nl<j6g
+zb}73IdvFD=u087K!8N!pY`C#@QWo#QZ-o4&?mgQeex<`HuQ8QsrI~;u&7RC6R}Xko
+z%VeRDVxYH{N)%kJl2csiUWH2VT%4mGyhSya6(%JwP`gH6+$DZmPWf4qW0}?`+HXqn
+zroo7*0R^>xEHH;k2anE{SXLO>YS{XDA)B(kU}Ri`U6~=^f?DUvGUp4dXjD`dL@Me^
+zyFi<xRw2w2Q39Un0PvVMd9B0622+S#lj?kTqm4Jg$kX0D=jADFy~%UklVw7~$C{8S
+z%nkGo8LOoZr2+z8rV%^$_D$<^XMcGbIV~tPG6({>Y){ei=!y=LHaAIhKS}6NH93+#
+zNRl@V&ka*#1)>x+aj6G@L<L~E5LhWgfZm$6<UcdVQ8~ubJEWN$8SZp%dcsww4rU!g
+z-vcw+Sf_?&kF_XJT{GEUErG9e|41qnY59~U=|jfLRB8ruBGCY+E1-kv;mhga?2+!v
+zC4Rpa?=1B@6=}tPPbMd_zzG(LpWK_w<f19CtgFcjuBe1eW^L8UhVIFa+ch~jIJiTz
+zYC(^eD`oDnnRIpAD9mN9>)MR%*`qJ)iyL(M&>q=)_N~t>WET6%KDqz4c~PMDDNFY{
+v6l0jT#C2TV_}@A1F7$YVPaRNFTi^$zPBY&U9X{x0^{1h{@=1i$K6JhT9)VR&
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/migrations/__pycache__/__init__.cpython-38.pyc b/expenses/migrations/__pycache__/__init__.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..80ef53f4ad2ac01e5edbd9eebab57850f90126c6
+GIT binary patch
+literal 160
+zcmWIL<>g`k0-f%FL=gQLL?8o3AjbiSi&=m~3PUi1CZpd<h9ZzKg81dCpOK%Ns-K!$
+zl$c?z?~<Qfnwy$eQmh}4Sd^1mk{|Dqm6(^Fub)~`keXMVTCAU&nO>Awl9``ZtREkr
+dnU`4-AFo$Xd5gm)H$SB`C)EyQ{AVC$004DtCnEp=
+
+literal 0
+HcmV?d00001
+
+diff --git a/expenses/models.py b/expenses/models.py
+new file mode 100644
+index 0000000..be7c3fa
+--- /dev/null
++++ b/expenses/models.py
+@@ -0,0 +1,23 @@
++import datetime
++
++from django.db import models
++from django.urls.base import reverse
++
++
++class Category(models.Model):
++    name = models.CharField(max_length=50, unique=True)
++
++    def __str__(self):
++        return f'{self.name}'
++
++
++class Expense(models.Model):
++    class Meta:
++        ordering = ('-date', '-pk')
++    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, related_name='expenses')
++    name = models.CharField(max_length=50)
++    amount = models.DecimalField(max_digits=8, decimal_places=2)
++    date = models.DateField(default=datetime.date.today, db_index=True)
++
++    def __str__(self):
++        return f'{self.date} {self.name} {self.amount}'
+diff --git a/expenses/reports.py b/expenses/reports.py
+new file mode 100644
+index 0000000..deaecf4
+--- /dev/null
++++ b/expenses/reports.py
+@@ -0,0 +1,29 @@
++from collections import OrderedDict
++
++from django.db.models import Sum, Value
++from django.db.models.functions import TruncMonth
++from django.db.models.functions import Coalesce
++
++
++def summary_per_category(queryset):
++    return OrderedDict(sorted(
++        queryset
++        .annotate(category_name=Coalesce('category__name', Value('-')))
++        .order_by()
++        .values('category_name')
++        .annotate(s=Sum('amount'))
++        .values_list('category_name', 's')
++    ))
++
++
++def summary_per_year_month(queryset):
++    return OrderedDict(sorted(
++        queryset
++        .annotate(
++            year_month=TruncMonth('date'),
++        )
++        .order_by()
++        .values('year_month')
++        .annotate(sum=Sum('amount'))
++        .values_list('year_month', 'sum')
++    ))
+diff --git a/expenses/templates/expenses/bycategory-list.html b/expenses/templates/expenses/bycategory-list.html
+new file mode 100644
+index 0000000..0d43853
+--- /dev/null
++++ b/expenses/templates/expenses/bycategory-list.html
+@@ -0,0 +1,8 @@
++
++
++<h1>{{expenses|length}} Expense
++</h1>
++<h2>Total per year-month: {{total}}</h2>
++{% for obj in expenses %}
++    <h2>{{obj.name}}</h2>
++{% endfor %}
+\ No newline at end of file
+diff --git a/expenses/templates/expenses/category-create.html b/expenses/templates/expenses/category-create.html
+new file mode 100644
+index 0000000..30327c5
+--- /dev/null
++++ b/expenses/templates/expenses/category-create.html
+@@ -0,0 +1,13 @@
++{% extends "base.html" %}
++
++{% block content %}
++<h1>Make a new Category</h1>
++<hr><hr>
++
++<form method="post">
++    {% csrf_token %}
++    {{ form.as_p }}
++    <input type="submit" value="Create">
++</form>
++
++{% endblock %}
+\ No newline at end of file
+diff --git a/expenses/templates/expenses/category-delete.html b/expenses/templates/expenses/category-delete.html
+new file mode 100644
+index 0000000..d1bfbda
+--- /dev/null
++++ b/expenses/templates/expenses/category-delete.html
+@@ -0,0 +1,10 @@
++<form method="post">{% csrf_token %}
++	
++
++    <p>Are you sure you want to delete "{{ object }}"?</p>
++
++    <p>{{object.expenses.all|length}} expense will be deleted</p>
++    
++        <input type="submit" value="Confirm">
++    </form>
++    
+\ No newline at end of file
+diff --git a/expenses/templates/expenses/category-list.html b/expenses/templates/expenses/category-list.html
+new file mode 100644
+index 0000000..57e75d2
+--- /dev/null
++++ b/expenses/templates/expenses/category-list.html
+@@ -0,0 +1,21 @@
++<h1>Category List</h1>
++<br>
++
++<form method="GET">
++   <select name="paginate_by" id="">
++       <option value="1">1</option>
++       <option value="2">2</option>
++       <option value="3">3</option>
++       <option value="5">5</option>
++   </select>
++   <input type="submit" value="Submit">
++</form>
++
++<br><hr><br>
++{% for obj in DataPaginated %}
++   <pre><h2><a href="{% url 'expenses:category_detail' pk=obj.id %}">{{ obj.name }}</h2></a></pre> <pre><a href="{% url 'expenses:category_update' pk=obj.id %}">Update</a></pre>
++</a> 
++<pre><h2><a href="{% url 'expenses:category_delete' pk=obj.id %}">Delete</h2></a></pre>
++{% endfor %}
++
++{% include '_pagination.html' %}
+\ No newline at end of file
+diff --git a/expenses/templates/expenses/category-update.html b/expenses/templates/expenses/category-update.html
+new file mode 100644
+index 0000000..ecd34ff
+--- /dev/null
++++ b/expenses/templates/expenses/category-update.html
+@@ -0,0 +1,13 @@
++{% extends "base.html" %}
++
++{% block content %}
++<h1>Make a new Category</h1>
++<hr><hr>
++
++<form method="post">
++    {% csrf_token %}
++    {{ form.as_p }}
++    <input type="submit" value="Update">
++</form>
++
++{% endblock %}
+\ No newline at end of file
+diff --git a/expenses/templates/expenses/expense_confirm_delete.html b/expenses/templates/expenses/expense_confirm_delete.html
+new file mode 100644
+index 0000000..221978b
+--- /dev/null
++++ b/expenses/templates/expenses/expense_confirm_delete.html
+@@ -0,0 +1,12 @@
++{% extends "base.html" %}
++
++{% block content %}
++
++<h1>Confirm removing "{{object}}"</h1>
++<form method="post" action="">
++  {% csrf_token %}
++  {{form.as_p}}
++  <button type="submit">delete</button>
++</form>
++
++{% endblock %}
+diff --git a/expenses/templates/expenses/expense_form.html b/expenses/templates/expenses/expense_form.html
+new file mode 100644
+index 0000000..e38750a
+--- /dev/null
++++ b/expenses/templates/expenses/expense_form.html
+@@ -0,0 +1,11 @@
++{% extends "base.html" %}
++
++{% block content %}
++
++<form method="post" action="">
++  {% csrf_token %}
++  {{form.as_p}}
++  <button type="submit">save</button>
++</form>
++
++{% endblock %}
+diff --git a/expenses/templates/expenses/expense_list.html b/expenses/templates/expenses/expense_list.html
+new file mode 100644
+index 0000000..c921bb5
+--- /dev/null
++++ b/expenses/templates/expenses/expense_list.html
+@@ -0,0 +1,103 @@
++{% extends "base.html" %}
++
++{% block content %}
++
++<a href="{% url 'expenses:expense-create' %}">add Expense</a>
++<a href="{% url 'expenses:category_create' %}">add Category</a>
++<br><br>
++<a href="{% url 'expenses:category_list' %}">Categories</a>
++<br><br>
++
++
++
++
++<form method="get" action="">
++  {{form.as_p}}
++  <button type="submit">search</button>
++</form>
++<br>
++<table border="1">
++  {% if form.cleaned_data.grouping == "date" %}
++    <thead>
++      <tr>
++        <th>no.</th>
++        <th>category</th>
++        <th>description</th>
++        <th>amount</th>
++        <th>actions</th>
++      </tr>
++    </thead>
++    <tbody>
++
++    {% for obj in object_list %}
++      {% ifchanged obj.date %}
++      <tr>
++        <td colspan="4">{{obj.date}}</td>
++      </tr>
++      {% endifchanged %}
++      <tr>
++        <td>{{ page_obj.start_index|add:forloop.counter0 }}.</td>
++        <td>{{ obj.category|default:"-" }}</td>
++        <td>{{ obj.name|default:"-" }}</td>
++        <td>{{ obj.amount|floatformat:2 }}</td>
++        <td>
++          <a href="{% url 'expenses:expense-edit' obj.id %}">edit</a>
++          <a href="{% url 'expenses:expense-delete' obj.id %}">delete</a>
++        </td>
++      </tr>
++      {% empty %}
++      <tr>
++        <td colspan="5">no items</td>
++      </tr>
++    {% endfor %}
++    </tbody>
++  {% else %}
++    <thead>
++      <tr>
++        <th>no.</th>
++        <th>category</th>
++        <th>description</th>
++        <th>date</th>
++        <th>amount</th>
++        <th>actions</th>
++      </tr>
++    </thead>
++    <tbody>
++    {% for obj in object_list %}
++      <tr>
++        <td>{{ page_obj.start_index|add:forloop.counter0 }}.</td>
++        <td>{{ obj.category|default:"-" }}</td>
++        <td>{{ obj.name|default:"-" }}</td>
++        <td>{{ obj.date }}</td>
++        <td>{{ obj.amount|floatformat:2 }}</td>
++        <td>
++          <a href="{% url 'expenses:expense-edit' obj.id %}">edit</a>
++          <a href="{% url 'expenses:expense-delete' obj.id %}">delete</a>
++        </td>
++      </tr>
++    {% empty %}
++      <tr>
++        <td colspan="6">no items</td>
++      </tr>
++    {% endfor %}
++    </tbody>
++  {% endif %}
++</table>
++
++{% include "_pagination.html" %}
++<hr>
++<table border="1">
++  <caption>Summary per category</caption>
++  <tr>
++    {% for category, total in summary_per_category.items %}<td>{{category}}: {{total|floatformat:2}}</td>{% endfor %}
++  </tr>
++</table>
++<hr>
++<table border="1">
++  <caption>Summary per year/month</caption>
++  <tr>
++    {% for year_month, total in summary_per_year_month.items %}<td>{{year_month|date:"Y-m"}}: {{total|floatformat:2}}</td>{% endfor %}
++  </tr>
++</table>
++
++{% endblock %}
+diff --git a/expenses/urls.py b/expenses/urls.py
+new file mode 100644
+index 0000000..ad200b5
+--- /dev/null
++++ b/expenses/urls.py
+@@ -0,0 +1,53 @@
++from django.views.generic import CreateView, UpdateView, DeleteView
++from . views import CategoryCreateView, CategoryDeleteView, CategoryListView, CategoryDetailView, CategoryUpdateView
++
++from django.urls import path, reverse_lazy
++from .models import Expense
++from .views import ExpenseListView
++
++
++urlpatterns = [
++    path('expense/list/',
++         ExpenseListView.as_view(),
++         name='expense-list'),
++    path('expense/create/',
++         CreateView.as_view(
++            model=Expense,
++            fields='__all__',
++            success_url=reverse_lazy('expenses:expense-list')
++         ),
++         name='expense-create'),
++    path('expense/<int:pk>/edit/',
++         UpdateView.as_view(
++            model=Expense,
++            fields='__all__',
++            success_url=reverse_lazy('expenses:expense-list')
++         ),
++         name='expense-edit'),
++    path('expense/<int:pk>/delete/',
++         DeleteView.as_view(
++             model=Expense,
++             success_url=reverse_lazy('expenses:expense-list')
++         ),
++         name='expense-delete'),
++
++     path('category/create', 
++          CategoryCreateView.as_view(), 
++          name='category_create'),
++
++     path('category/update/<int:pk>', 
++          CategoryUpdateView.as_view(), 
++          name='category_update'),
++
++     path('category/list',
++          CategoryListView.as_view(), 
++          name='category_list'),
++
++     path('category/list/<int:pk>', 
++          CategoryDeleteView.as_view(), 
++          name='category_delete'),
++     
++     path('category/list-detail/<int:pk>', 
++          CategoryDetailView.as_view(), 
++          name='category_detail'),
++]
+diff --git a/expenses/views.py b/expenses/views.py
+new file mode 100644
+index 0000000..179de80
+--- /dev/null
++++ b/expenses/views.py
+@@ -0,0 +1,129 @@
++from django.views.generic.detail import DetailView
++from django.views.generic.list import ListView
++from django.views.generic.edit import CreateView, DeleteView, UpdateView
++from .forms import CategoryCreateForm, ExpenseSearchForm
++from .models import Expense, Category
++from .reports import summary_per_category, summary_per_year_month
++from django.urls import reverse_lazy
++from django.shortcuts import render, redirect
++from django.core.exceptions import ValidationError
++from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
++from django.db.models import Sum
++
++
++
++class ExpenseListView(ListView):
++    model = Expense
++
++    def get_context_data(self, *, object_list=None, **kwargs):
++        queryset = object_list if object_list is not None else self.object_list
++        paginator = Paginator(queryset, 3)
++        page_number = self.request.GET.get('page')
++        page_obj = paginator.get_page(page_number)
++
++        try:
++            paginated = paginator.get_page(page_number)
++        except PageNotAnInteger:
++            paginated = paginator.get_page(1)
++        except EmptyPage:
++            paginated = paginator.page(paginator.num_pages)
++
++        form = ExpenseSearchForm(self.request.GET)
++        if form.is_valid():
++            name = form.cleaned_data.get('name', '').strip()
++            if name:
++                queryset = queryset.filter(name__icontains=name)
++
++            category = form.cleaned_data['category']
++            if category:
++                queryset = queryset.filter(category=category)
++
++            grouping = form.cleaned_data['grouping']
++            if grouping:
++                queryset = queryset.order_by('date', '-pk')
++
++        return super().get_context_data(
++            form=form,
++            object_list=page_obj,
++            DataPaginated=paginated,
++            summary_per_category=summary_per_category(queryset),
++            summary_per_year_month=summary_per_year_month(queryset),
++            **kwargs)
++
++
++class CategoryCreateView(CreateView):
++    model = Category
++    fields = ('name',)
++    success_url=reverse_lazy('expenses:expense-list')
++
++    def get(self, request, *args, **kwargs):
++        context = {'form': CategoryCreateForm()}
++        return render(request, 'expenses/category-create.html', context)
++
++    def post(self, request, *args, **kwargs):
++        form = CategoryCreateForm(request.POST)
++        if form.is_valid():
++            category = form.save()
++            category.save()
++            return redirect(self.success_url)
++        return render(request, 'expenses/category-create.html', {'form': form})
++
++    def validate_name(name):
++        names = Category.objects.values_list('name', flat=True)
++        print(names, 'names')
++        if name in names:
++            raise ValidationError("Already exists this category")
++
++
++class CategoryUpdateView(UpdateView):
++    model = Category
++    template_name = 'expenses/category-update.html'
++    fields = ('name',)
++    success_url ='/expenses/category/list'
++
++    def validate_name(name):
++        names = Category.objects.values_list('name', flat=True)
++        if name in names:
++            raise ValidationError("Already exists this category")
++
++
++class CategoryDeleteView(DeleteView):
++    model = Category
++    template_name = 'expenses/category-delete.html'
++    success_url ='/expenses/category/create'
++
++
++class CategoryListView(ListView):
++    model = Category
++    template_name = 'expenses/category-list.html'
++    context_object_name = 'categories'
++    
++    def get(self, request):
++        paginate_by = request.GET.get('paginate_by', 1) or 1
++        data = Category.objects.all()
++        paginator = Paginator(data, paginate_by)
++        page = request.GET.get('page')
++
++        try:
++            paginated = paginator.get_page(page)
++        except PageNotAnInteger:
++            paginated = paginator.get_page(1)
++        except EmptyPage:
++            paginated = paginator.page(paginator.num_pages)
++
++        return render(request, self.template_name, {'DataPaginated':paginated, 'paginate_by':paginate_by})
++
++class CategoryDetailView(DetailView):
++    model = Category
++    template_name = 'expenses/bycategory-list.html'
++
++    def get_context_data(self, *args, **kwargs):
++        context = super().get_context_data(**kwargs)
++        queryset = Expense.objects.filter(category__id=self.kwargs.get('pk'))
++        total = Expense.objects.filter(category__id=self.kwargs.get('pk')).aggregate(Sum('amount')).get('amount__sum')
++        if total == None:
++            total = 0
++        context['expenses'] = queryset
++        context['all'] = Expense.objects.all()
++        context['total'] = total
++        return context
+\ No newline at end of file
+diff --git a/fixtures.json b/fixtures.json
+new file mode 100644
+index 0000000..319dbb0
+--- /dev/null
++++ b/fixtures.json
+@@ -0,0 +1 @@
++[{"model": "contenttypes.contenttype", "pk": 1, "fields": {"app_label": "admin", "model": "logentry"}}, {"model": "contenttypes.contenttype", "pk": 2, "fields": {"app_label": "auth", "model": "permission"}}, {"model": "contenttypes.contenttype", "pk": 3, "fields": {"app_label": "auth", "model": "group"}}, {"model": "contenttypes.contenttype", "pk": 4, "fields": {"app_label": "auth", "model": "user"}}, {"model": "contenttypes.contenttype", "pk": 5, "fields": {"app_label": "contenttypes", "model": "contenttype"}}, {"model": "contenttypes.contenttype", "pk": 6, "fields": {"app_label": "sessions", "model": "session"}}, {"model": "contenttypes.contenttype", "pk": 7, "fields": {"app_label": "expenses", "model": "category"}}, {"model": "contenttypes.contenttype", "pk": 8, "fields": {"app_label": "expenses", "model": "expense"}}, {"model": "expenses.category", "pk": 1, "fields": {"name": "food"}}, {"model": "expenses.category", "pk": 2, "fields": {"name": "home (utilities)"}}, {"model": "expenses.category", "pk": 3, "fields": {"name": "clothes"}}, {"model": "expenses.category", "pk": 4, "fields": {"name": "transport"}}, {"model": "expenses.expense", "pk": 1, "fields": {"category": 1, "name": "apples", "amount": "2.40", "date": "2020-02-04"}}, {"model": "expenses.expense", "pk": 2, "fields": {"category": 1, "name": "bread", "amount": "2.00", "date": "2020-02-04"}}, {"model": "expenses.expense", "pk": 3, "fields": {"category": 1, "name": "salami", "amount": "4.30", "date": "2020-02-02"}}, {"model": "expenses.expense", "pk": 4, "fields": {"category": 1, "name": "butter", "amount": "5.20", "date": "2020-02-02"}}, {"model": "expenses.expense", "pk": 5, "fields": {"category": 1, "name": "butter", "amount": "5.20", "date": "2019-12-27"}}, {"model": "expenses.expense", "pk": 6, "fields": {"category": 2, "name": "rent", "amount": "800.00", "date": "2020-02-04"}}, {"model": "expenses.expense", "pk": 7, "fields": {"category": 2, "name": "rent", "amount": "800.00", "date": "2019-12-27"}}, {"model": "expenses.expense", "pk": 8, "fields": {"category": 2, "name": "electricity", "amount": "42.00", "date": "2020-02-04"}}, {"model": "expenses.expense", "pk": 9, "fields": {"category": 2, "name": "electricity", "amount": "42.00", "date": "2019-12-07"}}, {"model": "expenses.expense", "pk": 10, "fields": {"category": 3, "name": "trousers", "amount": "110.00", "date": "2020-02-04"}}, {"model": "expenses.expense", "pk": 11, "fields": {"category": 3, "name": "shirt", "amount": "60.00", "date": "2020-01-16"}}, {"model": "expenses.expense", "pk": 12, "fields": {"category": 3, "name": "shirt", "amount": "60.00", "date": "2019-12-25"}}, {"model": "auth.permission", "pk": 1, "fields": {"name": "Can add log entry", "content_type": 1, "codename": "add_logentry"}}, {"model": "auth.permission", "pk": 2, "fields": {"name": "Can change log entry", "content_type": 1, "codename": "change_logentry"}}, {"model": "auth.permission", "pk": 3, "fields": {"name": "Can delete log entry", "content_type": 1, "codename": "delete_logentry"}}, {"model": "auth.permission", "pk": 4, "fields": {"name": "Can view log entry", "content_type": 1, "codename": "view_logentry"}}, {"model": "auth.permission", "pk": 5, "fields": {"name": "Can add permission", "content_type": 2, "codename": "add_permission"}}, {"model": "auth.permission", "pk": 6, "fields": {"name": "Can change permission", "content_type": 2, "codename": "change_permission"}}, {"model": "auth.permission", "pk": 7, "fields": {"name": "Can delete permission", "content_type": 2, "codename": "delete_permission"}}, {"model": "auth.permission", "pk": 8, "fields": {"name": "Can view permission", "content_type": 2, "codename": "view_permission"}}, {"model": "auth.permission", "pk": 9, "fields": {"name": "Can add group", "content_type": 3, "codename": "add_group"}}, {"model": "auth.permission", "pk": 10, "fields": {"name": "Can change group", "content_type": 3, "codename": "change_group"}}, {"model": "auth.permission", "pk": 11, "fields": {"name": "Can delete group", "content_type": 3, "codename": "delete_group"}}, {"model": "auth.permission", "pk": 12, "fields": {"name": "Can view group", "content_type": 3, "codename": "view_group"}}, {"model": "auth.permission", "pk": 13, "fields": {"name": "Can add user", "content_type": 4, "codename": "add_user"}}, {"model": "auth.permission", "pk": 14, "fields": {"name": "Can change user", "content_type": 4, "codename": "change_user"}}, {"model": "auth.permission", "pk": 15, "fields": {"name": "Can delete user", "content_type": 4, "codename": "delete_user"}}, {"model": "auth.permission", "pk": 16, "fields": {"name": "Can view user", "content_type": 4, "codename": "view_user"}}, {"model": "auth.permission", "pk": 17, "fields": {"name": "Can add content type", "content_type": 5, "codename": "add_contenttype"}}, {"model": "auth.permission", "pk": 18, "fields": {"name": "Can change content type", "content_type": 5, "codename": "change_contenttype"}}, {"model": "auth.permission", "pk": 19, "fields": {"name": "Can delete content type", "content_type": 5, "codename": "delete_contenttype"}}, {"model": "auth.permission", "pk": 20, "fields": {"name": "Can view content type", "content_type": 5, "codename": "view_contenttype"}}, {"model": "auth.permission", "pk": 21, "fields": {"name": "Can add session", "content_type": 6, "codename": "add_session"}}, {"model": "auth.permission", "pk": 22, "fields": {"name": "Can change session", "content_type": 6, "codename": "change_session"}}, {"model": "auth.permission", "pk": 23, "fields": {"name": "Can delete session", "content_type": 6, "codename": "delete_session"}}, {"model": "auth.permission", "pk": 24, "fields": {"name": "Can view session", "content_type": 6, "codename": "view_session"}}, {"model": "auth.permission", "pk": 25, "fields": {"name": "Can add category", "content_type": 7, "codename": "add_category"}}, {"model": "auth.permission", "pk": 26, "fields": {"name": "Can change category", "content_type": 7, "codename": "change_category"}}, {"model": "auth.permission", "pk": 27, "fields": {"name": "Can delete category", "content_type": 7, "codename": "delete_category"}}, {"model": "auth.permission", "pk": 28, "fields": {"name": "Can view category", "content_type": 7, "codename": "view_category"}}, {"model": "auth.permission", "pk": 29, "fields": {"name": "Can add expense", "content_type": 8, "codename": "add_expense"}}, {"model": "auth.permission", "pk": 30, "fields": {"name": "Can change expense", "content_type": 8, "codename": "change_expense"}}, {"model": "auth.permission", "pk": 31, "fields": {"name": "Can delete expense", "content_type": 8, "codename": "delete_expense"}}, {"model": "auth.permission", "pk": 32, "fields": {"name": "Can view expense", "content_type": 8, "codename": "view_expense"}}]
+\ No newline at end of file
+diff --git a/manage.py b/manage.py
+new file mode 100755
+index 0000000..364337c
+--- /dev/null
++++ b/manage.py
+@@ -0,0 +1,21 @@
++#!/usr/bin/env python
++"""Django's command-line utility for administrative tasks."""
++import os
++import sys
++
++
++def main():
++    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
++    try:
++        from django.core.management import execute_from_command_line
++    except ImportError as exc:
++        raise ImportError(
++            "Couldn't import Django. Are you sure it's installed and "
++            "available on your PYTHONPATH environment variable? Did you "
++            "forget to activate a virtual environment?"
++        ) from exc
++    execute_from_command_line(sys.argv)
++
++
++if __name__ == '__main__':
++    main()
+diff --git a/project/__init__.py b/project/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/project/__pycache__/__init__.cpython-38.pyc b/project/__pycache__/__init__.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..2959da956898d7d6731b651c2828b6877eb53fc2
+GIT binary patch
+literal 148
+zcmWIL<>g`kf@`G#i6Hthh(HF6K#l_t7qb9~6oz01O-8?!3`HPe1o6vKKO;XkRX;Vi
+zC^5ra-z7h}G&eP`q*y;7u_!0CBtPCID={xUU%#LzKPxr4L_a=0GcU6wK3=b&@)n0p
+RZhlH>PO2Tq$j?B`007~LBFg{(
+
+literal 0
+HcmV?d00001
+
+diff --git a/project/__pycache__/settings.cpython-38.pyc b/project/__pycache__/settings.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..05c9e99bfa2e110be54fe11d6e0d580f1cb3b5ab
+GIT binary patch
+literal 2360
+zcmb7F-E-4M5VsV?c8mjo@R0&-MS+3?k$_NWI~^Kfi{Qau6WOHILp8GZVqee~x-%jA
+zTX-ms{fGLX>06)r4|IkO16|2>;&GU1YFVed-TnP`Z*N!XEG`x@`1^g>virqM=Fem?
+z{mbKG18?>R4v;Z3Ab{uyra**U@z=SjQ6lqih2%1`FlXjKGV?Is7t967LJsn<00lS!
+z#eU8#z#^Q4Q?LZ5;S4OJ<OG~Gi*PPwTO?UH4;S9f^#zb%1wMm|a0xE=B`Uz@ZzN<q
+z3166};7gDX?615P;j1?y70e~L3fIu`DqK&;uha1c75b8S8g80rpkyv%Y-jO4hxd6{
+zH7|f@WJ<T}+d?K&sO;Ka-<KKToO*pG@A#n{g#Iq+@ySyu6gG)RLYotiyZiDDNHJ?R
+zxYUyww?jTg+>nP1S>!S4x^hQZNAwfqbp4RX)I)mL=G6CO{PO`thtwgr(LX5+I1kwO
+zstSIODI*_aUZv-|D)Ce#RJk9}9#ba)t0Q_oAo9-8ab$-wF8e!&8?rq>M}&s*E87_o
+z_J4eZWM|6JUsw{EMs%-BS2rA1TJ`QbrB|g5``VzpX5HbwvsU`$q5EJDuJ^xj!eD)G
+z!@n0?@ySNej)m3e>}X547mtUutEB0RmS?3yK8P;O2onhLINuKli!RJ48DR_)dQ{<}
+z!tNvD;w*yW5%iM8v*<E;9S{#W6gvo*qK{W)-`k=6Xl;yiDS$)v?2sso^oAkj`-(B1
+z)DLvg{aHuj(3B~>F_KN8N=KdGdAq)+l+(w5n6hw3DdX^*lD#R@hcmI*nAqt!G+bj&
+zX)i6uDd6lTCTW}o*GH+HLOuAzCLG#(v1|8UU`r@JJqc}>G=rq}*%YogDe+<Gut*)V
+zaN-6I_M6g0IPqZ84@xC%z4lnm%-k3rFH9iJJd>8oYi^;ghk^Pbi*C*mAGJ|{bcg+D
+z^%#~Rd5N9Gqg!L!ge)!TB*&j%PI4cu&ln%%^%H=Jt|Y~|$6EQB-l&*TrMhLrd9Bs5
+z(pj$AYFC>LBU+iHaF6wAQpT9~^ibm*kR5yI@PiJ3?qNpRONVl@9u-hHo|nWpt2Z{Q
+z4Lz0`T3rtpu;ZhrGl8d-6xfXI`5{>NR-ur(Q#y=<8c#AY<iwyZb?l^5o{ud2FnV-c
+zraJYgJ9KNr>+``O{>S6uM~%}O$9PDvaa@AN&?O=59c7p&-rA6vbDefM%B%SD#|~0U
+zD{;=U@V#wWvFNi{3T!^W?9<T0qK|WSm!*=tWhHMN%QEwiHA7F%F)kQ-c}s6w&-9<;
+z`HKFyvl%aHwOVsquUJo;M%#!_RvSheMJT|-H{wFQTB+3ZZEZ`Bi(AcR+v;r9%FV`;
+zSlace7caE+daI_jbt7KdHa4pXs#Yy)Nwvfa6|Jo$&W(6Q>$IO*EzK~tn_Cs@xmK&9
+zvWZ2uSkoGt9c@#$%FT+7gw?uknN2K<d<Vm>-u<>Qn$_;!X~fw?);4h`ZS+x2qWLWo
+zUcu5yhkw3P2fj;G;)eF%p<3~Km|KrCwPlA6;l5Q#ds-b=@xcd23HIas53UbGhdjbh
+zb%wpdK`Q3wF6X2<Nz7(NVd{D(otRn);ybAzNusbMh~k0#z4%dlFMX7jq+B8^e!zKA
+R%%D^{GX5<sODImS?7!vI9}fTk
+
+literal 0
+HcmV?d00001
+
+diff --git a/project/__pycache__/urls.cpython-38.pyc b/project/__pycache__/urls.cpython-38.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..d748e210dc70e8696133faa190cb488679428b97
+GIT binary patch
+literal 458
+zcmYjO%SyyB6iw31w4H~D;KEPn!geKsh=|O>l?;k5x*0OPmuZKlElKNRwyx(x{2>?F
+zy7Cu9)MS_eFXY^u`#dD~<MDu4d+(;=iW2hS$ba)KxwJ=LTL1#IB$B37vXoKBS?Nih
+za!QbahkV%s4!t#nKKN_T#sZ`e!T^SA_R1D4?ZfDfMB`68jYQ1&MU|Bupy7>Z^N5<!
+zEkdC%Yaa@HGGuj#&ka@@_1X4vTo$@@g|?wZRn00PF%3cJd|nF$HpN|N74ABdh^@vu
+z5_hW9CfHFGI33i4u0=N@!<)!ALs*JxQEzG$vlYs-V2-xoM=MRo3#?ETSv(gS6?b`G
+z=$Xrzp<S|-r{9R$a}ykVog{fJF+r(Bews|`tdm%^I++SpVq4E9o4rY+>ZN^x#A%J2
+e7ZaSz8oClM><<xrU}2w*JWdCc{cz`h+4mpx9)zU;
+
+literal 0
+HcmV?d00001
+
+diff --git a/project/asgi.py b/project/asgi.py
+new file mode 100644
+index 0000000..46249aa
+--- /dev/null
++++ b/project/asgi.py
+@@ -0,0 +1,16 @@
++"""
++ASGI config for project project.
++
++It exposes the ASGI callable as a module-level variable named ``application``.
++
++For more information on this file, see
++https://docs.djangoproject.com/en/3.0/howto/deployment/asgi/
++"""
++
++import os
++
++from django.core.asgi import get_asgi_application
++
++os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
++
++application = get_asgi_application()
+diff --git a/project/settings.py b/project/settings.py
+new file mode 100644
+index 0000000..a72c3a8
+--- /dev/null
++++ b/project/settings.py
+@@ -0,0 +1,120 @@
++"""
++Django settings for project project.
++
++Generated by 'django-admin startproject' using Django 3.0.3.
++
++For more information on this file, see
++https://docs.djangoproject.com/en/3.0/topics/settings/
++
++For the full list of settings and their values, see
++https://docs.djangoproject.com/en/3.0/ref/settings/
++"""
++
++import os
++
++# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
++BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
++
++
++# Quick-start development settings - unsuitable for production
++# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
++
++# SECURITY WARNING: keep the secret key used in production secret!
++SECRET_KEY = 'bi*@ls)*n4l)v)@a$hb-_0tol-)^7m6wd%g5lrp3w@o2p!oe@p'
++
++# SECURITY WARNING: don't run with debug turned on in production!
++DEBUG = True
++
++ALLOWED_HOSTS = ['*']
++
++
++# Application definition
++
++INSTALLED_APPS = [
++    'django.contrib.admin',
++    'django.contrib.auth',
++    'django.contrib.contenttypes',
++    'django.contrib.sessions',
++    'django.contrib.messages',
++    'django.contrib.staticfiles',
++    'expenses.apps.ExpensesConfig',
++]
++
++MIDDLEWARE = [
++    'django.middleware.security.SecurityMiddleware',
++    'django.contrib.sessions.middleware.SessionMiddleware',
++    'django.middleware.common.CommonMiddleware',
++    'django.middleware.csrf.CsrfViewMiddleware',
++    'django.contrib.auth.middleware.AuthenticationMiddleware',
++    'django.contrib.messages.middleware.MessageMiddleware',
++    'django.middleware.clickjacking.XFrameOptionsMiddleware',
++]
++
++ROOT_URLCONF = 'project.urls'
++
++TEMPLATES = [
++    {
++        'BACKEND': 'django.template.backends.django.DjangoTemplates',
++        'DIRS': [os.path.join(BASE_DIR, 'project', 'templates')],
++        'APP_DIRS': True,
++        'OPTIONS': {
++            'context_processors': [
++                'django.template.context_processors.debug',
++                'django.template.context_processors.request',
++                'django.contrib.auth.context_processors.auth',
++                'django.contrib.messages.context_processors.messages',
++            ],
++        },
++    },
++]
++
++WSGI_APPLICATION = 'project.wsgi.application'
++
++
++# Database
++# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
++
++DATABASES = {
++    'default': {
++        'ENGINE': 'django.db.backends.sqlite3',
++        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
++    }
++}
++
++# Password validation
++# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
++
++AUTH_PASSWORD_VALIDATORS = [
++    {
++        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
++    },
++    {
++        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
++    },
++    {
++        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
++    },
++    {
++        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
++    },
++]
++
++
++# Internationalization
++# https://docs.djangoproject.com/en/3.0/topics/i18n/
++
++LANGUAGE_CODE = 'en-us'
++
++TIME_ZONE = 'UTC'
++
++USE_I18N = True
++
++USE_L10N = True
++
++USE_TZ = True
++
++
++# Static files (CSS, JavaScript, Images)
++# https://docs.djangoproject.com/en/3.0/howto/static-files/
++
++STATIC_URL = '/static/'
+diff --git a/project/templates/_pagination.html b/project/templates/_pagination.html
+new file mode 100644
+index 0000000..0defef7
+--- /dev/null
++++ b/project/templates/_pagination.html
+@@ -0,0 +1,17 @@
++<div class="pagination">
++    <span class="step-links">
++        {% if DataPaginated.has_previous %}
++            <a href="?page=1&param={{param}}">&laquo; first</a>
++            <a href="?page={{ DataPaginated.previous_page_number }}&param={{param}}">previous</a>
++        {% endif %}
++
++        <span class="current">
++            Page {{ DataPaginated.number }} of {{ DataPaginated.paginator.num_pages }}.
++        </span>
++
++        {% if DataPaginated.has_next %}
++            <a href="?page={{ DataPaginated.next_page_number }}&param={{param}}">next</a>
++            <a href="?page={{ DataPaginated.paginator.num_pages }}&param={{param}}">last &raquo;</a>
++        {% endif %}
++    </span>
++</div>
+\ No newline at end of file
+diff --git a/project/templates/base.html b/project/templates/base.html
+new file mode 100644
+index 0000000..d5eca36
+--- /dev/null
++++ b/project/templates/base.html
+@@ -0,0 +1,10 @@
++  <!DOCTYPE html>
++<html>
++  <head>
++    <title>{% block meta_title %}Expenses app{% endblock %}</title>
++    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
++  </head>
++  <body>
++    {% block content %}{% endblock %}
++  </body>
++</html>
+diff --git a/project/urls.py b/project/urls.py
+new file mode 100644
+index 0000000..f798b34
+--- /dev/null
++++ b/project/urls.py
+@@ -0,0 +1,11 @@
++from django.urls import include, path
++from django.views.generic.base import RedirectView
++
++urlpatterns = [
++    path('',
++         RedirectView.as_view(pattern_name='expenses:expense-list'),
++         name='dashboard'),
++    path('expenses/',
++         include(('expenses.urls', 'expenses'), namespace='expenses')
++         ),
++]
+diff --git a/project/wsgi.py b/project/wsgi.py
+new file mode 100644
+index 0000000..eb1e0a5
+--- /dev/null
++++ b/project/wsgi.py
+@@ -0,0 +1,16 @@
++"""
++WSGI config for project project.
++
++It exposes the WSGI callable as a module-level variable named ``application``.
++
++For more information on this file, see
++https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/
++"""
++
++import os
++
++from django.core.wsgi import get_wsgi_application
++
++os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
++
++application = get_wsgi_application()
+diff --git a/requirements.txt b/requirements.txt
+new file mode 100644
+index 0000000..ad3ec1d
+--- /dev/null
++++ b/requirements.txt
+@@ -0,0 +1,4 @@
++asgiref==3.4.1
++Django==3.2.7
++pytz==2021.1
++sqlparse==0.4.2
+-- 
+2.25.1
+
